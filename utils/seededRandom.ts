@@ -21,9 +21,17 @@ export const getTodaysSeed = (): number => {
   );
 };
 
-export const getPuzzleNumber = (startDateStr = '2025-09-20'): number => {
+export const getPuzzleNumber = (startDateStr = '2025-09-19'): number => {
+    // robust local date calculation
     const today = new Date();
-    const epoch = new Date(startDateStr);
-    const diffTime = Math.abs(today.getTime() - epoch.getTime());
+    today.setHours(0, 0, 0, 0);
+
+    const [y, m, d] = startDateStr.split('-').map(Number);
+    // Note: Month is 0-indexed in JS Date constructor (0 = Jan, 8 = Sep)
+    const epoch = new Date(y, m - 1, d); 
+    epoch.setHours(0, 0, 0, 0);
+
+    const diffTime = today.getTime() - epoch.getTime();
+    // Use floor to get completed days, +1 for 1-based index (Day 1, Day 2...)
     return Math.floor(diffTime / (1000 * 60 * 60 * 24)) + 1;
 }

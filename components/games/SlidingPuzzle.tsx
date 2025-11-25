@@ -149,6 +149,10 @@ export const SlidingPuzzle: React.FC<SlidingPuzzleProps> = ({ mode }) => {
            <div>Moves <span className="text-ink font-bold ml-1">{moves}</span></div>
         </div>
         
+        {mode === 'daily15' && (
+             <div className="text-ink-light">No. <span className="text-ink font-bold ml-1">{getPuzzleNumber()}</span></div>
+        )}
+
         {mode === 'quickplay' && (
           <div className={`${timeLeft <= 10 ? 'text-red-700' : 'text-ink'} transition-colors`}>
             Time <span className="font-bold ml-1">{timeLeft}s</span>
