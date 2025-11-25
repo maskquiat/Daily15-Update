@@ -4,6 +4,7 @@ import confetti from 'canvas-confetti';
 import { Button } from '../ui/Button';
 import { RotateCw, Undo2, RefreshCw } from 'lucide-react';
 import { GeniusPiece } from '../../types';
+import { getPuzzleNumber } from '../../utils/seededRandom';
 
 // Sophisticated Palette (Nature/Library/Academic tones)
 const PIECES_CONFIG = {
@@ -226,12 +227,14 @@ export const GeniusGrid: React.FC = () => {
     <div className="flex flex-col items-center max-w-xl mx-auto w-full animate-slide-up">
       
       {/* Control Bar */}
-      <div className="flex justify-between items-center w-full mb-4 px-4">
-        <div className="flex flex-col">
-             {/* Tiny progress indicator */}
-             <div className="flex gap-1">
+      <div className="flex justify-between items-end w-full mb-6 px-1">
+        <div className="flex flex-col gap-1">
+             <div className="text-ink-light text-[10px] md:text-xs font-sans uppercase tracking-widest">
+                No. <span className="text-ink font-bold ml-0.5">{getPuzzleNumber('2025-11-25')}</span>
+             </div>
+             <div className="flex gap-1 items-center">
                  <span className="text-xs font-sans uppercase tracking-widest text-ink-light">Remaining:</span>
-                 <span className="text-xs font-sans font-bold text-ink">{pieces.filter(p => !p.placed).length}</span>
+                 <span className="text-sm font-sans font-bold text-ink">{pieces.filter(p => !p.placed).length}</span>
              </div>
         </div>
         <div className="flex gap-3">

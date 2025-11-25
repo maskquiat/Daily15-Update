@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import confetti from 'canvas-confetti';
 import { SeededRandom, getTodaysSeed, getPuzzleNumber } from '../../utils/seededRandom';
 import { Button } from '../ui/Button';
-import { Clock, Trophy } from 'lucide-react';
+import { Clock, Trophy, Share2 } from 'lucide-react';
 
 interface SlidingPuzzleProps {
   mode: 'daily15' | 'quickplay';
@@ -25,6 +25,7 @@ export const SlidingPuzzle: React.FC<SlidingPuzzleProps> = ({ mode }) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [timeLeft, setTimeLeft] = useState(60);
   const [startTime, setStartTime] = useState<number | null>(null);
+  const [shareBtnText, setShareBtnText] = useState('Share');
 
   // Initialize/Reset Logic
   const initGame = useCallback(() => {
@@ -64,6 +65,7 @@ export const SlidingPuzzle: React.FC<SlidingPuzzleProps> = ({ mode }) => {
     setTiles(newTiles);
     setMoves(0);
     setIsComplete(false);
+    setShareBtnText('Share');
     if (mode === 'daily15') {
       setIsPlaying(true);
       setStartTime(Date.now());
@@ -132,9 +134,18 @@ export const SlidingPuzzle: React.FC<SlidingPuzzleProps> = ({ mode }) => {
     setIsPlaying(true);
   };
 
-  const shareResult = () => {
+  const shareResult = async () => {
     const text = `Daily15.xyz #${getPuzzleNumber()} \nSolved in ${moves} moves.`;
-    navigator.clipboard.writeText(text).then(() => alert("Copied to clipboard"));
+    try {
+        await navigator.clipboard.writeText(text);
+        setShareBtnText('Copied!');
+        setTimeout(() => setShareBtnText('Share'), 2000);
+    } catch (err) {
+        // Fallback for older browsers or denied permissions
+        console.error("Clipboard failed", err);
+        setShareBtnText('Error');
+        setTimeout(() => setShareBtnText('Share'), 2000);
+    }
   };
 
   const getRank = (moveCount: number) => {
@@ -219,7 +230,12 @@ export const SlidingPuzzle: React.FC<SlidingPuzzleProps> = ({ mode }) => {
              </p>
              <div className="flex flex-col gap-3 w-full max-w-[180px]">
                <Button onClick={mode === 'quickplay' ? startQuickPlay : shareResult} variant="primary" size="md" className="w-full">
-                 {mode === 'quickplay' ? 'Again' : 'Share'}
+                 {mode === 'quickplay' ? 'Again' : (
+                    <span className="flex items-center gap-2">
+                        {shareBtnText !== 'Share' && shareBtnText !== 'Error' ? null : <Share2 size={14} />}
+                        {shareBtnText}
+                    </span>
+                 )}
                </Button>
                {mode === 'daily15' && (
                    <Button onClick={initGame} variant="ghost" size="sm" className="w-full">
